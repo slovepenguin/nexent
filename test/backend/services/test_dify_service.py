@@ -160,7 +160,7 @@ class TestFetchDifyDatasetsImpl:
 
         # Verify it's an AppException with the correct error code
         assert hasattr(excinfo.value, 'error_code')
-        assert excinfo.value.error_code == ErrorCode.DIFY_CONFIG_INVALID
+        assert excinfo.value.error_code.value == ErrorCode.DIFY_CONFIG_INVALID.value
 
     def test_fetch_dify_datasets_impl_invalid_api_base_empty_string(self):
         """Test AppException when dify_api_base is empty string."""
@@ -173,7 +173,7 @@ class TestFetchDifyDatasetsImpl:
             )
 
         assert hasattr(excinfo.value, 'error_code')
-        assert excinfo.value.error_code == ErrorCode.DIFY_CONFIG_INVALID
+        assert excinfo.value.error_code.value == ErrorCode.DIFY_CONFIG_INVALID.value
 
     def test_fetch_dify_datasets_impl_invalid_api_base_not_string(self):
         """Test AppException when dify_api_base is not a string."""
@@ -186,7 +186,7 @@ class TestFetchDifyDatasetsImpl:
             )
 
         assert hasattr(excinfo.value, 'error_code')
-        assert excinfo.value.error_code == ErrorCode.DIFY_CONFIG_INVALID
+        assert excinfo.value.error_code.value == ErrorCode.DIFY_CONFIG_INVALID.value
 
     def test_fetch_dify_datasets_impl_invalid_api_key_none(self):
         """Test AppException when api_key is None."""
@@ -199,7 +199,7 @@ class TestFetchDifyDatasetsImpl:
             )
 
         assert hasattr(excinfo.value, 'error_code')
-        assert excinfo.value.error_code == ErrorCode.DIFY_CONFIG_INVALID
+        assert excinfo.value.error_code.value == ErrorCode.DIFY_CONFIG_INVALID.value
 
     def test_fetch_dify_datasets_impl_invalid_api_key_empty_string(self):
         """Test AppException when api_key is empty string."""
@@ -212,7 +212,7 @@ class TestFetchDifyDatasetsImpl:
             )
 
         assert hasattr(excinfo.value, 'error_code')
-        assert excinfo.value.error_code == ErrorCode.DIFY_CONFIG_INVALID
+        assert excinfo.value.error_code.value == ErrorCode.DIFY_CONFIG_INVALID.value
 
     def test_fetch_dify_datasets_impl_invalid_api_key_not_string(self):
         """Test AppException when api_key is not a string."""
@@ -225,7 +225,7 @@ class TestFetchDifyDatasetsImpl:
             )
 
         assert hasattr(excinfo.value, 'error_code')
-        assert excinfo.value.error_code == ErrorCode.DIFY_CONFIG_INVALID
+        assert excinfo.value.error_code.value == ErrorCode.DIFY_CONFIG_INVALID.value
 
     def test_fetch_dify_datasets_impl_url_normalization_trailing_slash(self):
         """Test that trailing slash is removed from API base URL."""
@@ -750,7 +750,7 @@ class TestFetchDifyDatasetsImpl:
                 )
 
             assert hasattr(excinfo.value, 'error_code')
-            assert excinfo.value.error_code == ErrorCode.DIFY_AUTH_ERROR
+            assert excinfo.value.error_code.value == ErrorCode.DIFY_AUTH_ERROR.value
 
     def test_fetch_dify_datasets_impl_http_403_auth_error(self):
         """Test that HTTP 403 maps to DIFY_AUTH_ERROR."""
@@ -775,7 +775,7 @@ class TestFetchDifyDatasetsImpl:
                 )
 
             assert hasattr(excinfo.value, 'error_code')
-            assert excinfo.value.error_code == ErrorCode.DIFY_AUTH_ERROR
+            assert excinfo.value.error_code.value == ErrorCode.DIFY_AUTH_ERROR.value
 
     def test_fetch_dify_datasets_impl_http_429_rate_limit(self):
         """Test that HTTP 429 maps to DIFY_RATE_LIMIT."""
@@ -800,7 +800,7 @@ class TestFetchDifyDatasetsImpl:
                 )
 
             assert hasattr(excinfo.value, 'error_code')
-            assert excinfo.value.error_code == ErrorCode.DIFY_RATE_LIMIT
+            assert excinfo.value.error_code.value == ErrorCode.DIFY_RATE_LIMIT.value
 
     def test_fetch_dify_datasets_impl_http_500_service_error(self):
         """Test that HTTP 500 maps to DIFY_SERVICE_ERROR."""
@@ -825,7 +825,7 @@ class TestFetchDifyDatasetsImpl:
                 )
 
             assert hasattr(excinfo.value, 'error_code')
-            assert excinfo.value.error_code == ErrorCode.DIFY_SERVICE_ERROR
+            assert excinfo.value.error_code.value == ErrorCode.DIFY_SERVICE_ERROR.value
 
     def test_fetch_dify_datasets_impl_http_404_service_error(self):
         """Test that HTTP 404 maps to DIFY_SERVICE_ERROR."""
@@ -850,4 +850,4 @@ class TestFetchDifyDatasetsImpl:
                 )
 
             assert hasattr(excinfo.value, 'error_code')
-            assert excinfo.value.error_code == ErrorCode.DIFY_SERVICE_ERROR
+            assert excinfo.value.error_code.value == ErrorCode.DIFY_SERVICE_ERROR.value

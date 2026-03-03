@@ -49,7 +49,7 @@ export const useErrorHandler = () => {
    * Get i18n error message by error code
    */
   const getI18nErrorMessage = useCallback(
-    (code: number): string => {
+    (code: string): string => {
       // Try to get i18n key
       const i18nKey = `errorCode.${code}`;
       const translated = t(i18nKey);

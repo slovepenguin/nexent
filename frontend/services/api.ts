@@ -302,7 +302,7 @@ export const API_ENDPOINTS = {
 // Common error handling
 export class ApiError extends Error {
   constructor(
-    public code: number,
+    public code: string | number,
     message: string
   ) {
     super(message);
