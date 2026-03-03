@@ -16,9 +16,9 @@ backend_path = os.path.abspath(os.path.join(
 sys.path.insert(0, backend_path)
 
 # Import AppException from consts.exceptions where it is defined
-from backend.consts.error_code import ErrorCode
-from consts.exceptions import AppException
 from backend.apps.app_factory import create_app, register_exception_handlers
+from consts.exceptions import AppException
+from consts.error_code import ErrorCode
 
 
 class TestCreateApp:
@@ -174,8 +174,8 @@ class TestRegisterExceptionHandlers:
         response = client.get("/test-app-exception")
 
         assert response.status_code == 400
-        assert response.json()["code"] == int(
-            ErrorCode.COMMON_VALIDATION_ERROR.value)
+        assert response.json()[
+            "code"] == ErrorCode.COMMON_VALIDATION_ERROR.value
         assert response.json()["message"] == "Validation failed"
 
     def test_app_exception_handler_with_details(self):
@@ -196,13 +196,12 @@ class TestRegisterExceptionHandlers:
 
         # MCP_CONNECTION_FAILED maps to 500 by default
         assert response.status_code == 500
-        assert response.json()["code"] == int(
-            ErrorCode.MCP_CONNECTION_FAILED.value)
+        assert response.json()["code"] == ErrorCode.MCP_CONNECTION_FAILED.value
         assert response.json()["details"] == {
             "host": "localhost", "port": 8080}
 
     def test_app_exception_handler_unauthorized(self):
-        """Test AppException handler with COMMON_UNAUTHORIZED error code."""
+        """Test AppException handler with UNAUTHORIZED error code."""
         app = FastAPI()
         register_exception_handlers(app)
 
@@ -217,7 +216,7 @@ class TestRegisterExceptionHandlers:
         assert response.status_code == 401
 
     def test_app_exception_handler_forbidden(self):
-        """Test AppException handler with COMMON_FORBIDDEN error code."""
+        """Test AppException handler with FORBIDDEN error code."""
         app = FastAPI()
         register_exception_handlers(app)
 
@@ -231,7 +230,7 @@ class TestRegisterExceptionHandlers:
         assert response.status_code == 403
 
     def test_app_exception_handler_rate_limit(self):
-        """Test AppException handler with COMMON_RATE_LIMIT_EXCEEDED error code."""
+        """Test AppException handler with RATE_LIMIT_EXCEEDED error code."""
         app = FastAPI()
         register_exception_handlers(app)
 
@@ -283,24 +282,24 @@ class TestRegisterExceptionHandlers:
         @app.get("/test-app-exception-in-generic")
         def raise_app_exception():
             # This should be handled by AppException handler, not generic
-            # Use COMMON_VALIDATION_ERROR which maps to 400
+            # Use VALIDATION_ERROR which maps to 400
             raise AppException(
                 ErrorCode.COMMON_VALIDATION_ERROR, "Validation failed")
 
         client = TestClient(app, raise_server_exceptions=False)
         response = client.get("/test-app-exception-in-generic")
 
-        # Should return 400 (mapped from COMMON_VALIDATION_ERROR)
+        # Should return 400 (mapped from VALIDATION_ERROR)
         assert response.status_code == 400
-        assert response.json()["code"] == int(
-            ErrorCode.COMMON_VALIDATION_ERROR.value)
+        assert response.json()[
+            "code"] == ErrorCode.COMMON_VALIDATION_ERROR.value
 
 
 class TestExceptionMappingToHttpStatus:
     """Test class for exception mapping to HTTP status codes."""
 
     def test_validation_error_maps_to_400(self):
-        """Test COMMON_VALIDATION_ERROR maps to 400."""
+        """Test VALIDATION_ERROR maps to 400."""
         app = FastAPI()
         register_exception_handlers(app)
 
@@ -315,7 +314,7 @@ class TestExceptionMappingToHttpStatus:
         assert response.status_code == 400
 
     def test_parameter_invalid_maps_to_400(self):
-        """Test COMMON_PARAMETER_INVALID maps to 400."""
+        """Test PARAMETER_INVALID maps to 400."""
         app = FastAPI()
         register_exception_handlers(app)
 
@@ -330,7 +329,7 @@ class TestExceptionMappingToHttpStatus:
         assert response.status_code == 400
 
     def test_missing_required_field_maps_to_400(self):
-        """Test COMMON_MISSING_REQUIRED_FIELD maps to 400."""
+        """Test MISSING_REQUIRED_FIELD maps to 400."""
         app = FastAPI()
         register_exception_handlers(app)
 
