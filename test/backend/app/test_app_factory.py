@@ -167,13 +167,15 @@ class TestRegisterExceptionHandlers:
 
         @app.get("/test-app-exception")
         def raise_app_exception():
-            raise AppException(ErrorCode.VALIDATION_ERROR, "Validation failed")
+            raise AppException(
+                ErrorCode.COMMON_VALIDATION_ERROR, "Validation failed")
 
         client = TestClient(app, raise_server_exceptions=False)
         response = client.get("/test-app-exception")
 
         assert response.status_code == 400
-        assert response.json()["code"] == ErrorCode.VALIDATION_ERROR.value
+        assert response.json()["code"] == int(
+            ErrorCode.COMMON_VALIDATION_ERROR.value)
         assert response.json()["message"] == "Validation failed"
 
     def test_app_exception_handler_with_details(self):
@@ -194,18 +196,20 @@ class TestRegisterExceptionHandlers:
 
         # MCP_CONNECTION_FAILED maps to 500 by default
         assert response.status_code == 500
-        assert response.json()["code"] == ErrorCode.MCP_CONNECTION_FAILED.value
+        assert response.json()["code"] == int(
+            ErrorCode.MCP_CONNECTION_FAILED.value)
         assert response.json()["details"] == {
             "host": "localhost", "port": 8080}
 
     def test_app_exception_handler_unauthorized(self):
-        """Test AppException handler with UNAUTHORIZED error code."""
+        """Test AppException handler with COMMON_UNAUTHORIZED error code."""
         app = FastAPI()
         register_exception_handlers(app)
 
         @app.get("/test-unauthorized")
         def raise_unauthorized():
-            raise AppException(ErrorCode.UNAUTHORIZED, "Unauthorized access")
+            raise AppException(ErrorCode.COMMON_UNAUTHORIZED,
+                               "Unauthorized access")
 
         client = TestClient(app, raise_server_exceptions=False)
         response = client.get("/test-unauthorized")
@@ -213,13 +217,13 @@ class TestRegisterExceptionHandlers:
         assert response.status_code == 401
 
     def test_app_exception_handler_forbidden(self):
-        """Test AppException handler with FORBIDDEN error code."""
+        """Test AppException handler with COMMON_FORBIDDEN error code."""
         app = FastAPI()
         register_exception_handlers(app)
 
         @app.get("/test-forbidden")
         def raise_forbidden():
-            raise AppException(ErrorCode.FORBIDDEN, "Access forbidden")
+            raise AppException(ErrorCode.COMMON_FORBIDDEN, "Access forbidden")
 
         client = TestClient(app, raise_server_exceptions=False)
         response = client.get("/test-forbidden")
@@ -227,13 +231,13 @@ class TestRegisterExceptionHandlers:
         assert response.status_code == 403
 
     def test_app_exception_handler_rate_limit(self):
-        """Test AppException handler with RATE_LIMIT_EXCEEDED error code."""
+        """Test AppException handler with COMMON_RATE_LIMIT_EXCEEDED error code."""
         app = FastAPI()
         register_exception_handlers(app)
 
         @app.get("/test-rate-limit")
         def raise_rate_limit():
-            raise AppException(ErrorCode.RATE_LIMIT_EXCEEDED,
+            raise AppException(ErrorCode.COMMON_RATE_LIMIT_EXCEEDED,
                                "Too many requests")
 
         client = TestClient(app, raise_server_exceptions=False)
@@ -279,28 +283,31 @@ class TestRegisterExceptionHandlers:
         @app.get("/test-app-exception-in-generic")
         def raise_app_exception():
             # This should be handled by AppException handler, not generic
-            # Use VALIDATION_ERROR which maps to 400
-            raise AppException(ErrorCode.VALIDATION_ERROR, "Validation failed")
+            # Use COMMON_VALIDATION_ERROR which maps to 400
+            raise AppException(
+                ErrorCode.COMMON_VALIDATION_ERROR, "Validation failed")
 
         client = TestClient(app, raise_server_exceptions=False)
         response = client.get("/test-app-exception-in-generic")
 
-        # Should return 400 (mapped from VALIDATION_ERROR)
+        # Should return 400 (mapped from COMMON_VALIDATION_ERROR)
         assert response.status_code == 400
-        assert response.json()["code"] == ErrorCode.VALIDATION_ERROR.value
+        assert response.json()["code"] == int(
+            ErrorCode.COMMON_VALIDATION_ERROR.value)
 
 
 class TestExceptionMappingToHttpStatus:
     """Test class for exception mapping to HTTP status codes."""
 
     def test_validation_error_maps_to_400(self):
-        """Test VALIDATION_ERROR maps to 400."""
+        """Test COMMON_VALIDATION_ERROR maps to 400."""
         app = FastAPI()
         register_exception_handlers(app)
 
         @app.get("/validation-error")
         def test_validation():
-            raise AppException(ErrorCode.VALIDATION_ERROR, "Invalid input")
+            raise AppException(
+                ErrorCode.COMMON_VALIDATION_ERROR, "Invalid input")
 
         client = TestClient(app, raise_server_exceptions=False)
         response = client.get("/validation-error")
@@ -308,13 +315,13 @@ class TestExceptionMappingToHttpStatus:
         assert response.status_code == 400
 
     def test_parameter_invalid_maps_to_400(self):
-        """Test PARAMETER_INVALID maps to 400."""
+        """Test COMMON_PARAMETER_INVALID maps to 400."""
         app = FastAPI()
         register_exception_handlers(app)
 
         @app.get("/parameter-invalid")
         def test_param():
-            raise AppException(ErrorCode.PARAMETER_INVALID,
+            raise AppException(ErrorCode.COMMON_PARAMETER_INVALID,
                                "Invalid parameter")
 
         client = TestClient(app, raise_server_exceptions=False)
@@ -323,14 +330,14 @@ class TestExceptionMappingToHttpStatus:
         assert response.status_code == 400
 
     def test_missing_required_field_maps_to_400(self):
-        """Test MISSING_REQUIRED_FIELD maps to 400."""
+        """Test COMMON_MISSING_REQUIRED_FIELD maps to 400."""
         app = FastAPI()
         register_exception_handlers(app)
 
         @app.get("/missing-field")
         def test_missing():
             raise AppException(
-                ErrorCode.MISSING_REQUIRED_FIELD, "Field missing")
+                ErrorCode.COMMON_MISSING_REQUIRED_FIELD, "Field missing")
 
         client = TestClient(app, raise_server_exceptions=False)
         response = client.get("/missing-field")
@@ -420,7 +427,8 @@ class TestAppExceptionResponseFormat:
 
         @app.get("/test-code-field")
         def test_code():
-            raise AppException(ErrorCode.AGENT_NOT_FOUND, "Agent not found")
+            raise AppException(
+                ErrorCode.AGENTSPACE_AGENT_NOT_FOUND, "Agent not found")
 
         client = TestClient(app, raise_server_exceptions=False)
         response = client.get("/test-code-field")
@@ -434,7 +442,8 @@ class TestAppExceptionResponseFormat:
 
         @app.get("/test-message-field")
         def test_message():
-            raise AppException(ErrorCode.AGENT_NOT_FOUND, "Agent not found")
+            raise AppException(
+                ErrorCode.AGENTSPACE_AGENT_NOT_FOUND, "Agent not found")
 
         client = TestClient(app, raise_server_exceptions=False)
         response = client.get("/test-message-field")
@@ -448,7 +457,8 @@ class TestAppExceptionResponseFormat:
 
         @app.get("/test-no-details")
         def test_no_details():
-            raise AppException(ErrorCode.VALIDATION_ERROR, "Validation failed")
+            raise AppException(
+                ErrorCode.COMMON_VALIDATION_ERROR, "Validation failed")
 
         client = TestClient(app, raise_server_exceptions=False)
         response = client.get("/test-no-details")
@@ -471,7 +481,7 @@ class TestMultipleExceptionHandlers:
 
         @app.get("/app-exc")
         def route_app():
-            raise AppException(ErrorCode.VALIDATION_ERROR, "App error")
+            raise AppException(ErrorCode.COMMON_VALIDATION_ERROR, "App error")
 
         @app.get("/gen-exc")
         def route_gen():
